@@ -1,0 +1,5 @@
+These are the files that get deployed to each of the rover vehicals
+clone or pull these files to the platform and then run the setup.sh here.
+
+All of these files (other than index.html) should co-exist with hew horizon.
+

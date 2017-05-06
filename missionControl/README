@@ -1,0 +1,4 @@
+These are the files that go onto the pi controlling mission control
+its job is to be a stand alone internt and serve addresses to all the space craft
+
+clone or pull the repository to mission control and run the setup.sh script here.
