@@ -3,3 +3,12 @@ clone or pull these files to the platform and then run the setup.sh here.
 
 All of these files (other than index.html) should co-exist with hew horizon.
 
+Additional setup steps:
+
+sudo apt-get -y install apache2
+sudo apt-get -y install gnuplot
+
+sudo sed --in-place=.bck '{s/www-data/pi/}' /etc/apache2/envvars
+sudo sed --in-place=.bck '{s/AddOutputFilterByType DEFLATE text\/html text\/plain text\/xml/#AddOutputFilterByType DEFLATE text\/html text\/plain text\/xml/}' /etc/apache2/mods-enabled/deflate.conf 
+cd /etc/apache2/mods-enabled
+sudo ln -s ../mods-available/cgi.load
