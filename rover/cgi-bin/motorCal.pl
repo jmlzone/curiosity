@@ -54,8 +54,8 @@ Motor Calibration on $hostname
 </H1>
 <a href="/"><img src=/littleman_small.jpg><br>home</a><br>
 <form action="/cgi-bin/motorCal.pl?post" method="post">
-Motor duration (between 1 and 20000) miliSeconds:
-    <input type="number" name="dur" min="1" max="20000" value=$dur> 
+Motor duration (between 1 and 20) Seconds:
+    <input type="number" name="dur" min="1" max="20" value=$dur> 
     <input type="radio" name="command" value="forward" $forwardChecked> forward
     <input type="radio" name="command" value="reverse" $reverseChecked> reverse
     <input type="radio" name="command" value="left" $leftChecked> left

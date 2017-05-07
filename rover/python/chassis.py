@@ -27,27 +27,27 @@ class motors :
     def forward(self, ms):
         self.mLeft.forward()
         self.mRight.forward()
-        time.sleep(float(ms)/1000.0)
+        time.sleep(float(ms))
         self.mLeft.stop()
         self.mRight.stop()
 
     def reverse(self, ms):
         self.mLeft.reverse()
         self.mRight.reverse()
-        time.sleep(float(ms)/1000.0)
+        time.sleep(float(ms))
         self.mLeft.stop()
         self.mRight.stop()
 
     def left(self, ms):
         self.mLeft.reverse()
         self.mRight.forward()
-        time.sleep(float(ms)/1000.0)
+        time.sleep(float(ms))
         self.mLeft.stop()
         self.mRight.stop()
 
     def right(self, ms):
         self.mLeft.forward()
         self.mRight.reverse()
-        time.sleep(float(ms)/1000.0)
+        time.sleep(float(ms))
         self.mLeft.stop()
         self.mRight.stop()
