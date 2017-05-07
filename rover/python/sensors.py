@@ -59,7 +59,7 @@ class sensors :
         forwardDistance = self.rFront.measure()
         reverseDistance = self.rRear.measure()
         (amb,obj) = self.ir.measure()
-        (hum,temp) = self.ht.measure()
+        #(hum,temp) = self.ht.measure()
         batVolts = self.voltage.measure()
         uv = self.uv.measure()
         gas = self.gas.measure()
@@ -68,7 +68,7 @@ class sensors :
         print "Sensor Readings:"
         print "Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance)
         print "Temperatures: Ambient = %f, Object = %f" % (amb,obj)
-        print "Relative Humidity = %f, Temperature = %f" % (hum,temp)
+        #print "Relative Humidity = %f, Temperature = %f" % (hum,temp)
         print "Battery Voltage = %f " % batVolts
         print "Gas Level = %f" % gas
         print "UV Level = %f" % uv

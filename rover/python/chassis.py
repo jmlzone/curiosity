@@ -56,21 +56,90 @@ class motors :
         self.mLeft.stop()
         self.mRight.stop()
 
+class servo :
+    def __init__ (self,pin):
+        self.pin = pin
+        GPIO.setup(self.pin, GPIO.OUT)
+        self.period = 20.0 # ms = 50 hz
+        frequency = 1000/self.period # 50 hz
+        self.pwm=GPIO.PWM(self.pin,frequency)
+
+    def position (self,angle) :
+        # 0 degrees = 0.6 ms
+        # 180 degrees = 2.6 ms
+        deg0 = 0.6
+        deg180 = 2.6
+        span = deg180-deg0
+        angle = float(angle)
+        #print "angle = %f" %angle
+        if(angle >=0 and angle <=180) :
+            ap=angle/180.0
+            pw=(ap*span) + deg0;
+            pp = (pw * 100.0)/self.period
+            #print "angle %d period %f pulse width %f precent %f" %(angle, self.period, pw, pp)
+            self.pwm.start(pp)
+            time.sleep(0.1)
+            self.pwm.ChangeDutyCycle(pp)
+            time.sleep(1.0)
+            #self.pwm.stop()
+        else :
+            print "Error can't go to angle %f" % angle
+
+class stepper :
+    def __init__ (self,pins, delay=0.002, reverse=0) :
+        self.pins = pins
+        GPIO.setup(self.pins, GPIO.OUT)
+        GPIO.output(self.pins,GPIO.LOW)    
+        self.step=0;
+        self.stepDelay = delay # in seconds not lower than 0.002
+        self.steps=[[1,0,0,0],[1,1,0,0],[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,1,1],[0,0,0,1],[1,0,0,1]]
+        self.reverse = reverse # set directtion to be the other way
+    def go(self,num) :
+        GPIO.output(self.pins,self.steps[self.step])
+        num = int(num)
+        if num < 0 :
+            num = num *-1
+            dir = -1
+        else :
+            dir = 1
+        if(self.reverse==0) :
+            dir = - dir
+        for i in range(num) :
+            self.step = (self.step + dir) % 8
+            GPIO.output(self.pins,self.steps[self.step])
+            time.sleep(self.stepDelay)
+        GPIO.output(self.pins,GPIO.LOW)    
+    def off(self) :
+        GPIO.output(self.pins,[0,0,0,0])
+
+
 class chassis :
     def __init__ (self) :
         self.m = motors (18,23,25,24)
-
-    def run (self,cmd,dur) :
+        self.mast = servo(6) # servo 1
+        self.cam = servo(13) # servo 2
+        #self.stepper1 = stepper([32,40,38,36]) # only need pins
+        #self.stepper2 = stepper([32,40,38,36],delay=0.005) # want to adjust delay
+        #self.stepper3 = stepper([32,40,38,36],reverse=1) # need direction reberse
+        #self.stepper4 = stepper([32,40,38,36],delay=0.008,reverse=1) #set delay and reverse
+        self.wiggle = stepper([12,16,20,21])
+    def run (self,cmd,amt) :
         if(cmd == 'forward') :
-            self.m.forward(dur)
+            self.m.forward(amt)
         elif (cmd == 'reverse') :
-            self.m.reverse(dur)
+            self.m.reverse(amt)
         elif (cmd == 'left') :
-            self.m.left(dur)
+            self.m.left(amt)
         elif (cmd == 'right') :
-            self.m.right(dur)
+            self.m.right(amt)
+        elif (cmd == 'mast') :
+            self.mast.position(amt)
+        elif (cmd == 'nod') :
+            self.cam.position(amt)
+        elif (cmd == 'wig') :
+            self.wiggle.go(amt)
         else:
-            print "Chassis Error:: Don't know how to do %s %s" % (cmd,dur)
+            print "Chassis Error:: Don't know how to do %s %s" % (cmd,amt)
 
     def stop(self) :
         self.m.stop()
