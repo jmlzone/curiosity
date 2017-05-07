@@ -22,7 +22,7 @@ if($mode =~ /^post$/){
 }
 sub display_full_form{
     &html_header("Motor Calibration");
-    $dur = 100;
+    $dur = 0.50;
     $commmand = "forward";
     &display_sub_form;
 }
