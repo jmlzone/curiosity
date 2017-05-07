@@ -32,12 +32,12 @@ sub display_sub_form{
 	$reverseChecked = "";
 	$leftChecked = "";
 	$rightChecked = "";
-    }elseif($command eq "reverse") {
+    }elsif($command eq "reverse") {
 	$forwardChecked = "";
 	$reverseChecked = "checked";
 	$leftChecked = "";
 	$rightChecked = "";
-    }elseif($command eq "left") {
+    }elsif($command eq "left") {
 	$forwardChecked = "";
 	$reverseChecked = "";
 	$leftChecked = "checked";
