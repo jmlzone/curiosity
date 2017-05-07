@@ -58,7 +58,7 @@ class motors :
 
 class chassis :
     def __init__ (self) :
-        self.m = self.motors (18,23,25,24)
+        self.m = motors (18,23,25,24)
 
     def run (self,cmd,dur) :
         if(cmd == 'forward') :

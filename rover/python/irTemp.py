@@ -4,7 +4,7 @@ class irTemp :
     def __init__ (self) :
         pass
     def measure(self) :
-        measurment = subprocess.check_output("./mlxAvg10")
+        measurment = subprocess.check_output("../c/mlxAvg10")
         (a,o)=measurment.split(",")
         amb=float(a)
         obj=float(o)

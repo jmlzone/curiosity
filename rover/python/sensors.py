@@ -34,13 +34,13 @@ class sensors :
         self.rFront = ranger.ranger(17,27)
         self.rRear = ranger.ranger(19,26)
         self.ir=irTemp.irTemp()
-        self.voltage = self.adcChan(0,float(5.12/1023.0))
-        self.gas = self.adcChan(1,float(1/200))
-        self.uv = self.adcChan(2,float(1/200))
-        self.light = self.adcChan(3,float(1/200))
+        self.voltage = adcChan(0,float(5.12/1023.0))
+        self.gas = adcChan(1,float(1/200))
+        self.uv = adcChan(2,float(1/200))
+        self.light = adcChan(3,float(1/200))
 
     def readAll(self) :
-        forwardDstance = self.rFront.measure()
+        forwardDistance = self.rFront.measure()
         reverseDistance = self.rRear.measure()
         (amb,obj) = self.ir.measure()
         batVolts = self.voltage.measure()
