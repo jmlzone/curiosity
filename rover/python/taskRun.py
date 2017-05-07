@@ -1,4 +1,7 @@
 #!/usr/bin/python
+""" try this as an example
+ sudo ./taskRun.py reverse 2 left 2 right 2  forward 2
+"""
 import chassis
 import sys
 import time

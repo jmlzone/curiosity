@@ -24,31 +24,31 @@ class motors :
         self.mLeft = hPair(la,lb)
         self.mRight = hPair(ra,rb)
 
-    def forward(self, ms):
+    def forward(self, sec):
         self.mLeft.forward()
         self.mRight.forward()
-        time.sleep(float(ms))
+        time.sleep(float(sec))
         self.mLeft.stop()
         self.mRight.stop()
 
-    def reverse(self, ms):
+    def reverse(self, sec):
         self.mLeft.reverse()
         self.mRight.reverse()
-        time.sleep(float(ms))
+        time.sleep(float(sec))
         self.mLeft.stop()
         self.mRight.stop()
 
-    def left(self, ms):
+    def left(self, sec):
         self.mLeft.reverse()
         self.mRight.forward()
-        time.sleep(float(ms))
+        time.sleep(float(sec))
         self.mLeft.stop()
         self.mRight.stop()
 
-    def right(self, ms):
+    def right(self, sec):
         self.mLeft.forward()
         self.mRight.reverse()
-        time.sleep(float(ms))
+        time.sleep(float(sec))
         self.mLeft.stop()
         self.mRight.stop()
 
@@ -70,7 +70,7 @@ class chassis :
         elif (cmd == 'right') :
             self.m.right(dur)
         else:
-            print "Chassis Error:: Dont know how to do %s %s" % (cmd,dur)
+            print "Chassis Error:: Don't know how to do %s %s" % (cmd,dur)
 
     def stop(self) :
         self.m.stop()

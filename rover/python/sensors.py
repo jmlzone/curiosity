@@ -34,10 +34,10 @@ class sensors :
         self.rFront = ranger.ranger(17,27)
         self.rRear = ranger.ranger(19,26)
         self.ir=irTemp.irTemp()
-        self.voltage = adcChan(0,float(5.12/1023.0))
-        self.gas = adcChan(1,float(1/200))
-        self.uv = adcChan(2,float(1/200))
-        self.light = adcChan(3,float(1/200))
+        self.voltage = adcChan(0,float(0.02))
+        self.gas = adcChan(1,float(0.005))
+        self.uv = adcChan(2,float(0.005))
+        self.light = adcChan(3,float(1.0/200.0))
 
     def readAll(self) :
         forwardDistance = self.rFront.measure()
@@ -52,6 +52,7 @@ class sensors :
         print "Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance)
         print "Temperatures: Ambient = %f, Object = %f" % (amb,obj)
         print "Battery Voltage = %f " % batVolts
+        print "Gas Level = %f" % gas
         print "UV Level = %f" % uv
         print "Light Level = %f" %light
 
