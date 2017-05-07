@@ -2,8 +2,8 @@
 ::1		localhost ip6-localhost ip6-loopback
 ff02::1		ip6-allnodes
 ff02::2		ip6-allrouters
-192.168.1.1	router router.stellafane.local
-192.168.1.10	missioncontrol missioncontrol.stellafane.local
+192.168.1.2	router router.stellafane.local
+192.168.1.10	missioncontrol missioncontrol.stellafane.local google.com www.google.com yahoo.com www.yahoo.com verizon.com
 192.168.1.11	nh1 nh1.stellafane.local
 192.168.1.12	nh2 nh2.stellafane.local
 192.168.1.13	nh3 nh3.stellafane.local
