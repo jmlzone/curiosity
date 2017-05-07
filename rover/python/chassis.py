@@ -21,33 +21,33 @@ class hPair :
 class motors :
     """ class to encapsulate 2 motors and 4 direction controls """
     def __init__ (self, la,lb, ra, rb) :
-        self.left = hPair(la,lb)
-        self.right = hpair(ra,rb)
+        self.mLeft = hPair(la,lb)
+        self.mRight = hPair(ra,rb)
 
     def forward(self, ms):
-        self.left.forward()
-        self.right.forward()
+        self.mLeft.forward()
+        self.mRight.forward()
         time.sleep(float(ms)/1000.0)
-        self.left.stop()
-        self.right.stop()
+        self.mLeft.stop()
+        self.mRight.stop()
 
     def reverse(self, ms):
-        self.left.reverse()
-        self.right.reverse()
+        self.mLeft.reverse()
+        self.mRight.reverse()
         time.sleep(float(ms)/1000.0)
-        self.left.stop()
-        self.right.stop()
+        self.mLeft.stop()
+        self.mRight.stop()
 
     def left(self, ms):
-        self.left.reverse()
-        self.right.forward()
+        self.mLeft.reverse()
+        self.mRight.forward()
         time.sleep(float(ms)/1000.0)
-        self.left.stop()
-        self.right.stop()
+        self.mLeft.stop()
+        self.mRight.stop()
 
     def right(self, ms):
-        self.left.forward()
-        self.right.reverse()
+        self.mLeft.forward()
+        self.mRight.reverse()
         time.sleep(float(ms)/1000.0)
-        self.left.stop()
-        self.right.stop()
+        self.mLeft.stop()
+        self.mRight.stop()

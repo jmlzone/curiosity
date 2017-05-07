@@ -2,9 +2,9 @@
 import chassis
 import sys
 import time
-import RPi.GPIO as GPIOimport RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
-m = motors (1,2,3,4)
+m = chassis.motors (18,23,25,24)
 cmd = sys.argv[1]
 dur = sys.argv[2]
 
@@ -17,4 +17,4 @@ elif (cmd == 'left') :
 else:
     m.right(dur)
 GPIO.cleanup()
-print("Complete moved %s for %d ms" %(cmd,dur) )
+print("Complete moved %s for %s ms" %(cmd,dur) )
