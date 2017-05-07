@@ -3,6 +3,7 @@
 import ranger
 import irTemp
 import spidev
+import Adafruit_DHT
 
 """ examples of sensors and how to read
 
@@ -28,12 +29,27 @@ class adcChan :
         data = ((r[1] & 3) << 8) + r[2]
         return ( float(data) * self.scale)
 
+class DHT :
+    def __init__(self,pin):
+        self.pin = pin
+
+    def measure(self) :
+        (humidity, temperature) = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, self.pin)
+        if humidity is not None and  temperature is not None:
+            temperatureF = 9/5.0 * temperature + 32
+        else:
+            humidity = None
+            temperatureF = None
+        return (humidity, temperatureF)
+
+
 class sensors :
     """ All sensors on the Curiosity platform """
     def __init__ (self) :
         self.rFront = ranger.ranger(17,27)
         self.rRear = ranger.ranger(19,26)
         self.ir=irTemp.irTemp()
+        self.ht=DHT(22)
         self.voltage = adcChan(0,float(0.02))
         self.gas = adcChan(1,float(0.005))
         self.uv = adcChan(2,float(0.005))
@@ -43,6 +59,7 @@ class sensors :
         forwardDistance = self.rFront.measure()
         reverseDistance = self.rRear.measure()
         (amb,obj) = self.ir.measure()
+        (hum,temp) = self.ht.measure()
         batVolts = self.voltage.measure()
         uv = self.uv.measure()
         gas = self.gas.measure()
@@ -51,6 +68,7 @@ class sensors :
         print "Sensor Readings:"
         print "Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance)
         print "Temperatures: Ambient = %f, Object = %f" % (amb,obj)
+        print "Relative Humidity = %f, Temperature = %f" % (hum,temp)
         print "Battery Voltage = %f " % batVolts
         print "Gas Level = %f" % gas
         print "UV Level = %f" % uv
