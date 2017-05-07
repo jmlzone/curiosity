@@ -51,3 +51,27 @@ class motors :
         time.sleep(float(ms))
         self.mLeft.stop()
         self.mRight.stop()
+
+    def stop(self) :
+        self.mLeft.stop()
+        self.mRight.stop()
+
+class chassis :
+    def __init__ (self) :
+        self.m = self.motors (18,23,25,24)
+
+    def run (self,cmd,dur) :
+        if(cmd == 'forward') :
+            self.m.forward(dur)
+        elif (cmd == 'reverse') :
+            self.m.reverse(dur)
+        elif (cmd == 'left') :
+            self.m.left(dur)
+        elif (cmd == 'right') :
+            self.m.right(dur)
+        else:
+            print "Chassis Error:: Dont know how to do %s %s" % (cmd,dur)
+
+    def stop(self) :
+        self.m.stop()
+        
