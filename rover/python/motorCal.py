@@ -17,3 +17,4 @@ elif (cmd == 'left') :
 else:
     m.right(dur)
 GPIO.cleanup()
+print("Complete moved %s for %d ms" %(cmd,dur) )

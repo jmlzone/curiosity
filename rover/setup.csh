@@ -21,11 +21,11 @@
 # the file or jml@jmlzone.com
 echo "----------------------------------------------------------------------"
 echo "Updating html"
-sudo cp nh_stage/html/* /var/www/html
+sudo cp html/* /var/www/html
 sudo chmod a+r /var/www/html/*
 echo "----------------------------------------------------------------------"
 echo "Updating cgi-bin"
-sudo cp nh_stage/cgi-bin/* /usr/lib/cgi-bin
+sudo cp cgi-bin/* /usr/lib/cgi-bin
 sudo chmod a+rx /usr/lib/cgi-bin/*
 echo "----------------------------------------------------------------------"
 echo "----------------------------------------------------------------------"
