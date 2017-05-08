@@ -4,11 +4,24 @@ clone or pull these files to the platform and then run the setup.sh here.
 All of these files (other than index.html) should co-exist with hew horizon.
 
 Additional setup steps:
+sudo raspi-config
+  * clean up internatilization options
+  * enable camera, I2C and SPI
 
-sudo apt-get -y install apache2
-sudo apt-get -y install gnuplot
+sudo apt-get -y install apache2 gnuplot
+sudo apt-get install -y cmake  emacs
+wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
+tar xfz bcm2835-1.50.tar.gz 
+cd bcm2835-1.50/
+./configure
+sudo make check
+sudo make install
+   
 
 sudo sed --in-place=.bck '{s/www-data/pi/}' /etc/apache2/envvars
 sudo sed --in-place=.bck '{s/AddOutputFilterByType DEFLATE text\/html text\/plain text\/xml/#AddOutputFilterByType DEFLATE text\/html text\/plain text\/xml/}' /etc/apache2/mods-enabled/deflate.conf 
 cd /etc/apache2/mods-enabled
 sudo ln -s ../mods-available/cgi.load
+
+cd ~/curiosity/rover/
+./setup.csh
