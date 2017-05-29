@@ -53,11 +53,11 @@ $missionList
 <body>
 <hr>
     <a href="/">home</a><br>
-    Click to <a href="/cgi-bin/launch.sh">launch</a> a new mission<br>
-    View <a href="/missions/mission.html">most recent mission</a><br>
-    View all <a href="/missions/index.html">mission index</a><br>
-    <a href="/cgi-bin/missionBuild.pl">Mission Task List Builder</a><br>
+    View <a href="/curiosity/missions/mission.html">most recent mission</a><br>
+    View all <a href="/curiosity/missions/index.html">Mission Index</a><br>
     <a href="/cgi-bin/motorCal.pl">Motor Calibration</a>
+    <br>
+    <img src=curiosity.jpg>
 
 </body>
 </html>

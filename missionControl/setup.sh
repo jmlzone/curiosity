@@ -4,6 +4,9 @@
 # please sudo this file!
 #
 echo "----------------------------------------------------------------------"
+echo "Updating etc"
+sudo cp dhcpcd.conf dnsmasq.conf hosts /etc
+echo "----------------------------------------------------------------------"
 echo "Updating html"
 sudo cp html/* /var/www/html
 sudo chmod a+r /var/www/html/*
