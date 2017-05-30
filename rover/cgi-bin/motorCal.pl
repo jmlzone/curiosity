@@ -72,7 +72,7 @@ Motor duration (between 0.01 and 20) Seconds:
     <a href="/cgi-bin/missionBuild.pl">Build Mission Task List</a><br>
     <a href="/cgi-bin/motorCal.pl">Motor Calibration</a>
     <br>
-    <img src=curiosity.jpg>
+    <img src=/curiosity.jpg>
 </body>
 </html>
 EOF

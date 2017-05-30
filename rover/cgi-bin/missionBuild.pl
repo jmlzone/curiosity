@@ -43,11 +43,11 @@ foreach $cmd (@cmdList) {
 </select>
     <input type="number" name="cnt" min="0.01" max="20" step=".01" value=$cnt> 
     <br>
-    <input type="submit" value="Add" />
+    <input name="submit" type="submit" value="Add" />
 <textarea name="missionList" rows="5" cols="50">
 $missionList
 </textarea>
-    <input type="submit" value="Run" />
+    <input name="submit" type="submit" value="Run" />
 </form>
 
 <body>
@@ -57,7 +57,7 @@ $missionList
     View all <a href="/curiosity/missions/index.html">Mission Index</a><br>
     <a href="/cgi-bin/motorCal.pl">Motor Calibration</a>
     <br>
-    <img src=curiosity.jpg>
+    <img src=/curiosity.jpg>
 
 </body>
 </html>
@@ -65,14 +65,26 @@ EOF1
 }
 
 sub post{
-    $cmd = $rqpairs{"cmd"};
+    $cmd = $rqpairs{"command"};
     $cnt = $rqpairs{"cnt"};
-    $missionList = join( " ", $rqpairs{"missionList"}, $cmd, $cnt)
-    &html_header("Build Mission Task List");
-    print "<H1>Mission Task List Building on $hostname</H1>";
-    #$output = system("sudo python /home/pi/curiosity/rover/python/motorCal.py $command $dur");
-    #print $output;
-    print "\n<br>\n";
-    &display_sub_form;
+    $opt = $rqpairs{"submit"};
+    $ml = $rqpairs{"missionList"};
+    $missionList = "$ml $cmd $cnt";
+    $missionList =~ s/\n//g;
+    if ($opt eq "Add" ) {
+	&html_header("Build Mission Task List");
+#        print "opt = $opt, cmd = $cmd, cnt = $cnt, ml = $rqpairs{\"missionList\"} \n $missionList ";
+	print "<H1>Mission Task List Building on $hostname</H1>";
+	print "\n<br>\n";
+	&display_sub_form;
+    } else { # run
+	&html_header("Build Mission Task List");
+	print "<H1>Curiosity Running Mission Task List on $hostname</H1>\n";
+	print "\n<br>\n";
+	print "<pre>\n";
+	$output = system("sudo python /home/pi/curiosity/rover/python/taskRun.py $missionList");
+	$output =~ s/\n/<br>\n/sg;
+	print $output;
+	print "</pre>\n";
+    }
 }
-
