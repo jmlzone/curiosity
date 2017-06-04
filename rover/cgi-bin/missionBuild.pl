@@ -9,7 +9,7 @@
 # For commercial or other use please contact the author as indicated in
 # the file or jml@jmlzone.com
 #
-@cmdList=("forward","reverse","left","right","mast","nod","widdle","cameraHR","cameraHS");
+@cmdList=("forward","reverse","left","right","mast","nod","widdle","cameraHS","cameraRF", "cameraRFHS");
 use Sys::Hostname;
 my $hostname = hostname;
 $|=1;

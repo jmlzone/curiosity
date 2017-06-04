@@ -27,6 +27,7 @@ echo "----------------------------------------------------------------------"
 echo "Updating cgi-bin"
 sudo cp cgi-bin/* /usr/lib/cgi-bin
 sudo chmod a+rx /usr/lib/cgi-bin/*
+mkdir -p /var/www/html/curiosity/missions    
 echo "----------------------------------------------------------------------"
 echo "----------------------------------------------------------------------"
 echo "all_done"
