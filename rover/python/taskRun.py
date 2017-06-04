@@ -9,6 +9,7 @@ import RPi.GPIO as GPIO
 import sensors
 import camera
 import socket
+import os.path
 
 def sequenceNumber():
     sequencePath = configRoot + "/sequence.txt"
@@ -26,15 +27,15 @@ def sequenceNumber():
 
 
 hostname = socket.gethostname()
-htmlRoot = "/var/www/html/curiosity"
-configRoot = htmlRoot + "/missions"
-htmlBaseName = htmlRoot + "/" + hostname + "_"
+htmlRoot = "/var/www/html"
+configRoot = htmlRoot + "/curiosity/missions"
+imgBaseName =  "/curiosity/missions/" + hostname + "_"
 
 seq = sequenceNumber()
 
 c = chassis.chassis()
 s = sensors.sensors()
-cam = camera(hostname,seq,htmlBaseName,40)
+cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,22)
 
 
 argNum = 1;

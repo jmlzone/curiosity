@@ -19,12 +19,13 @@ import sys
 import re
 
 class camera:
-    def __init__ (self,hostname,seq, imagePath, rangerPin) :
+    def __init__ (self,hostname,seq, htmlRoot, imagePath, rangerPin) :
         self.hostname = hostname
         self.seq = seq
+        self.htmlRoot = htmlRoot
         self.imagePath = imagePath
         self.rangerPin = rangerPin
-        GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.rangerPin, GPIO.OUT)
         GPIO.output(self.rangerPin,GPIO.LOW)    
         self.camera = picamera.PiCamera()
@@ -48,19 +49,20 @@ class camera:
         self.camera.start_preview()
 
     def capture(self,camHs, numPic, useRanger) :
-        pname = self.imagePath + self.seq + "_" + "%d" + ".jpg"
-        print "capturing %d images %s" % (num_pic, name)
+        pname = self.htmlRoot + self.imagePath + self.seq + "_" + "%d" + ".jpg"
+        print ("capturing %d images" % numPic)
         if(useRanger) :
             GPIO.output(self.rangerPin,GPIO.HIGH)
-        self.camera.capture_sequence([pname %i for i in range(num_pic)], use_video_port=camHs)
+        self.camera.capture_sequence([pname %i for i in range(numPic)], use_video_port=camHs)
         if(useRanger) :
             GPIO.output(self.rangerPin,GPIO.LOW)
 
-    def taskCapture(self,task,num):
+    def taskCapture(self,task,numStr):
+        num = int(numStr)
         useRanger = (task.find("RF") != -1)
         camHs = (task.find("HS") != -1)
-        self.capture(camHs,numPic,useRanger)
+        self.capture(camHs,num,useRanger)
         pbase = self.imagePath + self.seq + "_"
         for i in range(num) :
-            print("<img src=%s%d.jpg ><br>" % (pbase,i)"
+            print("<img src=%s%d.jpg ><br>" % (pbase,i))
 
