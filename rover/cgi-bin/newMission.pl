@@ -78,6 +78,7 @@ sub post{
 	    print FO, "</head>\n<body>\n";
 	    print FO, "<H1>Curiosity $missionName log</H1>\n";
 	    close(FO);
+	    unlink("${htmlRoot}${docRoot}/sequence.txt")
 	    if -e "${htmlRoot}${docRoot}/index.html" {
 		open(FO, ">${htmlRoot}${docRoot}/index.html" ) || die "can't open mission index ${htmlRoot}${docRoot}/$index.html\n";
 		print FO <<EOF2;
