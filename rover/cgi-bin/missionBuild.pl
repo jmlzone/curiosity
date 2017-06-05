@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# copyleft 201y James Lee jml@jmlzone.com
+# copyleft 2017 James Lee jml@jmlzone.com
 # This file is one of many created by or found by James Lee
 # <jml@jmlzone.com> to help with the curiosity rover model for stellafane 2017.
 # )c( 2017 for curiosity
@@ -9,11 +9,17 @@
 # For commercial or other use please contact the author as indicated in
 # the file or jml@jmlzone.com
 #
-@cmdList=("forward","reverse","left","right","mast","nod","widdle","cameraHS","cameraRF", "cameraRFHS");
+@cmdList=("forward","reverse","left","right","mast","nod","widdle","camera", "cameraHS","cameraRF", "cameraRFHS","CameraVid");
 use Sys::Hostname;
 my $hostname = hostname;
 $|=1;
 require "cgi_handlers.pl" ;
+$htmlRoot = "/var/www/html";
+$docRoot = "/curiosity/missions";
+open FI, "$htmlRoot$docRoot/name.txt" || die "Cant open $htmlRoot$docRoot/name.txt";
+$currentMission = <FI>;
+close(FI);
+
 ($mode = $ARGV[0]) =~ s/:.*$//;
 &get_request;
 if($mode =~ /^post$/){
@@ -30,7 +36,7 @@ sub display_full_form{
 sub display_sub_form{
     print <<EOF;
 <H1>
-Mission Task List Builder on $hostname
+Mission $currentMission Task List Builder on $hostname
 </H1>
 <a href="/"><img src=/littleman_small.jpg><br>home</a><br>
 <form action="/cgi-bin/missionBuild.pl?post" method="post">
@@ -53,9 +59,11 @@ $missionList
 <body>
 <hr>
     <a href="/">home</a><br>
-    View <a href="/curiosity/missions/mission.html">most recent mission</a><br>
-    View all <a href="/curiosity/missions/index.html">Mission Index</a><br>
-    <a href="/cgi-bin/motorCal.pl">Motor Calibration</a>
+    View <a href="$docRoot/mission.html">most recent mission</a><br>
+    View all <a href="$docRoot/index.html">Mission Index</a><br>
+    <a href="/cgi-bin/motorCal.pl">Motor Calibration</a><br>
+    <a href="/cgi-bin/missionBuild.pl">Mission Builder</a><br>
+    <a href="/cgi-bin/newMission.pl">Start New Mission</a><br>
     <br>
     <img src=/curiosity.jpg>
 
@@ -72,14 +80,13 @@ sub post{
     $missionList = "$ml $cmd $cnt";
     $missionList =~ s/\n//g;
     if ($opt eq "Add" ) {
-	&html_header("Build Mission Task List");
+	&html_header("Build $currentMission Mission Task List");
 #        print "opt = $opt, cmd = $cmd, cnt = $cnt, ml = $rqpairs{\"missionList\"} \n $missionList ";
-	print "<H1>Mission Task List Building on $hostname</H1>";
 	print "\n<br>\n";
 	&display_sub_form;
     } else { # run
-	&html_header("Build Mission Task List");
-	print "<H1>Curiosity Running Mission Task List on $hostname</H1>\n";
+	&html_header("Running Mission Task List");
+	print "<H1>Curiosity Running Mission $currentMisstion Task List on $hostname</H1>\n";
 	print "\n<br>\n";
 	print "<pre>\n";
 	$output = system("sudo python /home/pi/curiosity/rover/python/taskRun.py $missionList");

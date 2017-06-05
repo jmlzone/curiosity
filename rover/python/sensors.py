@@ -55,7 +55,7 @@ class sensors :
         self.uv = adcChan(2,float(0.005))
         self.light = adcChan(3,float(1.0/200.0))
 
-    def readAll(self) :
+    def readAll(self,log) :
         forwardDistance = self.rFront.measure()
         reverseDistance = self.rRear.measure()
         (amb,obj) = self.ir.measure()
@@ -65,14 +65,24 @@ class sensors :
         gas = self.gas.measure()
         light = self.light.measure()
 
-        print "Sensor Readings:"
-        print "Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance)
-        print "Temperatures: Ambient = %f, Object = %f" % (amb,obj)
-        #print "Relative Humidity = %f, Temperature = %f" % (hum,temp)
-        print "Battery Voltage = %f " % batVolts
-        print "Gas Level = %f" % gas
-        print "UV Level = %f" % uv
-        print "Light Level = %f" %light
+        print ("Sensor Readings:")
+        print ("Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance))
+        print ("Temperatures: Ambient = %f, Object = %f" % (amb,obj))
+        #print ("Relative Humidity = %f, Temperature = %f" % (hum,temp))
+        print ("Battery Voltage = %f " % batVolts)
+        print ("Gas Level = %f" % gas)
+        print ("UV Level = %f" % uv)
+        print ("Light Level = %f" %light)
 
+        log.write ("Sensor Readings:<br>")
+        log.write ("Distances: Forward = %f, Reverse = %f<br>" % (forwardDistance, reverseDistance))
+        log.write ("Temperatures: Ambient = %f, Object = %f<br>" % (amb,obj))
+        #log.write ("Relative Humidity = %f, Temperature = %f<br>" % (hum,temp))
+        log.write ("Battery Voltage = %f <br>" % batVolts)
+        log.write ("Gas Level = %f<br>" % gas)
+        log.write ("UV Level = %f<br>" % uv)
+        log.write ("Light Level = %f<br>" %light)
+
+        
 
         
