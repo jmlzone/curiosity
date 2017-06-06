@@ -10,6 +10,8 @@ sudo raspi-config
 
 sudo apt-get -y install apache2 gnuplot
 sudo apt-get install -y cmake  emacs
+sudo apt-get install -y gpac
+  
 wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
 tar xfz bcm2835-1.50.tar.gz 
 cd bcm2835-1.50/

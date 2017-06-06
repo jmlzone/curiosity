@@ -16,6 +16,7 @@ import picamera
 import os
 import RPi.GPIO as GPIO
 import sys
+import subprocess
 
 class camera:
     def __init__ (self,hostname,seq, htmlRoot, imagePath, rangerPin, log) :
@@ -49,10 +50,12 @@ class camera:
         self.camera.framerate = 30
         self.camera.start_preview()
         self.vidRunning = False
+        self.view = 0
+        self.vid = 0
 
     def capture(self,camHs, numPic, useRanger) :
         if(self.getCamLock()) :
-            pname = self.htmlRoot + self.imagePath + self.seq + "_" + "%d" + ".jpg"
+            pname = self.htmlRoot + self.imagePath + self.seq + ("_%d_" % self.view) + "%d" + ".jpg"
             # print ("pname = %s" % pname)
             print ("capturing %d images" % numPic)
             if(useRanger) :
@@ -67,7 +70,7 @@ class camera:
 
     def vidStart(self) :
         if(self.getCamLock()) :
-            vname = self.htmlRoot + self.imagePath + self.seq  + ".mov"
+            vname = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".h264"
             self.camera.start_recording(vname,format='h264')
             self.vidRunning=True
 
@@ -75,10 +78,15 @@ class camera:
         if(self.vidRunning) :
             self.camera.stop_recording()
             self.releaseCamLock()
-            vbase = self.imagePath + self.seq + ".mov"
+            h264path = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".h264"
+            mp4path = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".mp4"
+            args = ['MP4Box',  '-fps', '30', '-add', h264path, mp4path]
+            convPid = subprocess.call(args)
+            vbase = self.imagePath + self.seq + ("_%" % self.vid) + ".mp4"
             print("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
             self.log.write("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
             self.vidRunning=False
+            self.vid = self.vid + 1
 
     def taskCapture(self,task,numStr):
         num = int(numStr)
@@ -93,10 +101,11 @@ class camera:
         else:
             success = self.capture(camHs,num,useRanger)
             if(success) :
-                pbase = self.imagePath + self.seq + "_"
+                pbase = self.imagePath + self.seq + ("_%d_" % self.view)
                 for i in range(num) :
                     print("<img src=%s%d.jpg ><br>" % (pbase,i))
                     self.log.write("<img src=%s%d.jpg ><br>" % (pbase,i))
+                self.view = self.view +1
     def getCamLock(self) :
         if( os.path.isfile(self.camLock ) ):
             print("Error, Camera already in use")
