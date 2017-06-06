@@ -60,6 +60,7 @@ while (argNum < len(sys.argv)) :
     argNum = argNum + 2
 
 cam.vidStop()
+cam.close()
 missionLog.write("<hr>")
 print ("</pre>")
 print ("    View <a href=\"/curiosity/missions/mission.html\">most recent mission</a><br>")

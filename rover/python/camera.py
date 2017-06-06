@@ -70,7 +70,7 @@ class camera:
 
     def vidStart(self) :
         if(self.getCamLock()) :
-            vname = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".h264"
+            vname = self.htmlRoot + self.imagePath + self.seq + ("_%d" % self.vid) + ".h264"
             self.camera.start_recording(vname,format='h264')
             self.vidRunning=True
 
@@ -78,11 +78,11 @@ class camera:
         if(self.vidRunning) :
             self.camera.stop_recording()
             self.releaseCamLock()
-            h264path = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".h264"
-            mp4path = self.htmlRoot + self.imagePath + self.seq + ("_%" % self.vid) + ".mp4"
+            h264path = self.htmlRoot + self.imagePath + self.seq + ("_%d" % self.vid) + ".h264"
+            mp4path = self.htmlRoot + self.imagePath + self.seq + ("_%d" % self.vid) + ".mp4"
             args = ['MP4Box',  '-fps', '30', '-add', h264path, mp4path]
             convPid = subprocess.call(args)
-            vbase = self.imagePath + self.seq + ("_%" % self.vid) + ".mp4"
+            vbase = self.imagePath + self.seq + ("_%d" % self.vid) + ".mp4"
             print("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
             self.log.write("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
             self.vidRunning=False
@@ -118,3 +118,5 @@ class camera:
     def releaseCamLock(self) :
         if( os.path.isfile(self.camLock ) ):
             os.remove(self.camLock)
+    def close(self) :
+        self.camera.close()
