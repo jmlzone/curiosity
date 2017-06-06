@@ -61,5 +61,14 @@ while (argNum < len(sys.argv)) :
 
 cam.vidStop()
 missionLog.write("<hr>")
+print ("</pre>")
+print ("    View <a href=\"/curiosity/missions/mission.html\">most recent mission</a><br>")
+print ("    View all <a href=\"/curiosity/missions/index.html\">Mission Index</a><br>")
+print ("    <a href=\"/cgi-bin/newMission.pl\">Start a new Mission</a><br>")
+print ("    <a href=\"/cgi-bin/missionBuild.pl\">Build Mission Task List</a><br>")
+print ("    <a href=\"/cgi-bin/motorCal.pl\">Motor Calibration</a>")
+print ("    <br>")
+print ("    <img src=/curiosity.jpg>")
+print ("    <hr>")
 
 GPIO.cleanup()
