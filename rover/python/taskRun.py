@@ -29,7 +29,7 @@ def getMissionName():
     namePath = configRoot + "/name.txt"
     if os.path.isfile(namePath):
         file = open(namePath)
-        name = file.read()
+        name = file.read().rstrip()
         file.close()
     else:
         name = "testing"
@@ -42,16 +42,16 @@ configRoot = htmlRoot + "/curiosity/missions"
 seq = sequenceNumber()
 missionName = getMissionName()
 imgBaseName =  "/curiosity/missions/" + hostname + "_" + missionName + "_"
-missionLog = open( configRoot + missionName + "_log.html", "a")
+missionLog = open( configRoot + "/" + missionName + "_log.html", "a")
 c = chassis.chassis()
 s = sensors.sensors()
 cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,22,missionLog)
-missionLog.write("<h2>Sequence %d</h2><br>" % seq)
+missionLog.write("<h2>Sequence %s</h2><br>" % seq)
 
 argNum = 1;
 while (argNum < len(sys.argv)) :
     task = sys.argv[argNum]
-    missionLog.Write("%s %s<br>" % (task, sys.argv[argNum+1]))
+    missionLog.write("%s %s<br>" % (task, sys.argv[argNum+1]))
     if(task.find("cam") != -1):
         cam.taskCapture(task, sys.argv[argNum+1])
     else:

@@ -15,7 +15,7 @@ $|=1;
 require "cgi_handlers.pl" ;
 $htmlRoot = "/var/www/html";
 $docRoot = "/curiosity/missions";
-open FI, "$htmlRoot$docRoot/name.txt" || die "Cant open $htmlRoot$docRoot/name.txt";
+open FI, "{$htmlRoot}${docRoot}/name.txt" || die "Cant open ${htmlRoot}${docRoot}/name.txt";
 $currentMission = <FI>;
 close(FI);
 
@@ -42,7 +42,7 @@ Start a new mission on $hostname
     Pressing submit will finalize the $currentMission mission and start a new mission
 <br> 
     <input name="submit" type="submit" value="submit" />
-    <input name="cancel" type="cancel" value="cancel" />
+    <input name="cancel" type="submit" value="cancel" />
 </form>
 
 <body>
@@ -64,22 +64,26 @@ EOF
 sub post{
     $missionName = $rqpairs{"missionName"};
     $opt = $rqpairs{"submit"};
-    htmlLog = "${missionName}_log.html"
+    $htmlLog = "${missionName}_log.html";
     if ($opt eq "submit" ) {
 	&html_header("Start New Mission");
-	if -e "${htmlRoot}${docRoot}/${htmlLog}" {
+	if( -e "${htmlRoot}${docRoot}/${htmlLog}") {
 	    print "Error a mission with the name $missionName exists on this rover pick another name!\n<br>";
 	} else {
 	    print "Creating new mission log for $missionName.\n<br>";
-	    open(FO, ">${htmlRoot}${docRoot}/${htmlLog}" ) || die "cant open mission log ${htmlRoot}${docRoot}/${htmlLog}\n";
-	    print FO, "Content-type: text/html\n\n";
-	    print FO, "<html><head>\n";
-	    print FO, "<title>Curiosity $missionName log</title>\n";
-	    print FO, "</head>\n<body>\n";
-	    print FO, "<H1>Curiosity $missionName log</H1>\n";
+	    open(FO, ">${htmlRoot}${docRoot}/name.txt" ) || die "cant open mission name ${htmlRoot}${docRoot}/name.txt\n";
+	    print FO "$missionName\n";
 	    close(FO);
-	    unlink("${htmlRoot}${docRoot}/sequence.txt")
-	    if -e "${htmlRoot}${docRoot}/index.html" {
+	    
+	    open(FO, ">${htmlRoot}${docRoot}/${htmlLog}" ) || die "cant open mission log ${htmlRoot}${docRoot}/${htmlLog}\n";
+	    print FO "Content-type: text/html\n\n";
+	    print FO "<html><head>\n";
+	    print FO "<title>Curiosity $missionName log</title>\n";
+	    print FO "</head>\n<body>\n";
+	    print FO "<H1>Curiosity $missionName log</H1>\n";
+	    close(FO);
+	    unlink("${htmlRoot}${docRoot}/sequence.txt");
+	    if(! -e "${htmlRoot}${docRoot}/index.html") {
 		open(FO, ">${htmlRoot}${docRoot}/index.html" ) || die "can't open mission index ${htmlRoot}${docRoot}/$index.html\n";
 		print FO <<EOF2;
 Content-type: text/html\n\n
@@ -87,7 +91,7 @@ Content-type: text/html\n\n
 <title>Curiosity $hostname missions</title>\n
 </head>\n<body>\n
 <H1>Curiosity $hostname missions</H1>\n
-<img src=/curiosity.jpg>
+<img src="/curiosity.jpg">
 <a href="/">home</a><br>
 View <a href="$docRoot/mission.html">most recent mission</a><br>
 View all <a href="$docRoot/index.html">Mission Index</a><br>
@@ -95,13 +99,17 @@ View all <a href="$docRoot/index.html">Mission Index</a><br>
 <a href="/cgi-bin/missionBuild.pl">Mission Builder</a><br>
 <a href="/cgi-bin/newMission.pl">Start New Mission</a><br>
 <br>
+<hr>
+<ul>
+<li><a href=\"${docRoot}/${htmlLog}\"> Mission ${missionName} mission log</a></li>
 
 EOF2
-	    close(FO);
-} else {
+		    close(FO);
+	} else {
 	    open(FO, ">>${htmlRoot}${docRoot}/index.html" ) || die "can't open mission index ${htmlRoot}${docRoot}/$index.html\n";
-	    print FO, "<li><a href=\"${docRoot}/${htmlLog}\"> Mission ${missionName} mission log</a></li>\n";
+	    print FO "<li><a href=\"${docRoot}/${htmlLog}\"> Mission ${missionName} mission log</a></li>\n";
 	    close(FO);
+	}
 	}
     } else { # run
 	&html_header("Cancelled");

@@ -23,7 +23,7 @@ class camera:
         self.seq = seq
         self.htmlRoot = htmlRoot
         self.imagePath = imagePath
-        self.camLock = self.imagePath + "/camLock"
+        self.camLock = os.path.dirname(self.htmlRoot + self.imagePath) + "/camLock"
         self.rangerPin = rangerPin
         self.log=log
         GPIO.setmode(GPIO.BCM)
@@ -48,17 +48,18 @@ class camera:
     	self.camera.crop = (0.0, 0.0, 1.0, 1.0)
         self.camera.framerate = 30
         self.camera.start_preview()
-        sef.vidRunning = False
+        self.vidRunning = False
 
     def capture(self,camHs, numPic, useRanger) :
         if(self.getCamLock()) :
             pname = self.htmlRoot + self.imagePath + self.seq + "_" + "%d" + ".jpg"
+            # print ("pname = %s" % pname)
             print ("capturing %d images" % numPic)
             if(useRanger) :
                 GPIO.output(self.rangerPin,GPIO.HIGH)
-                self.camera.capture_sequence([pname %i for i in range(numPic)], use_video_port=camHs)
-                if(useRanger) :
-                    GPIO.output(self.rangerPin,GPIO.LOW)
+            self.camera.capture_sequence([pname %i for i in range(numPic)], use_video_port=camHs)
+            if(useRanger) :
+                GPIO.output(self.rangerPin,GPIO.LOW)
             self.releaseCamLock()
             return(True)
         else:
@@ -68,14 +69,15 @@ class camera:
         if(self.getCamLock()) :
             vname = self.htmlRoot + self.imagePath + self.seq  + ".mov"
             self.camera.start_recording(vname,format='h264')
+            self.vidRunning=True
 
     def vidStop(self) :
         if(self.vidRunning) :
             self.camera.stop_recording()
             self.releaseCamLock()
             vbase = self.imagePath + self.seq + ".mov"
-            print("<video id="curiosityVideo" src=%s preload controls ></video>" % vbase)
-            self.log.write("<video id="curiosityVideo" src=%s preload controls ></video>" % vbase)
+            print("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
+            self.log.write("<video id=\"curiosityVideo\" src=%s preload controls ></video>" % vbase)
             self.vidRunning=False
 
     def taskCapture(self,task,numStr):
@@ -95,15 +97,15 @@ class camera:
                 for i in range(num) :
                     print("<img src=%s%d.jpg ><br>" % (pbase,i))
                     self.log.write("<img src=%s%d.jpg ><br>" % (pbase,i))
-    def getCamLock() :
+    def getCamLock(self) :
         if( os.path.isfile(self.camLock ) ):
             print("Error, Camera already in use")
             return(False)
         else :
-            file = open(self.camlock,"w")
+            file = open(self.camLock,"w")
             file.write("Locked")
             return(True)
             
-    def releaseCamLock() :
+    def releaseCamLock(self) :
         if( os.path.isfile(self.camLock ) ):
-            os.remove(self.camlock)
+            os.remove(self.camLock)
