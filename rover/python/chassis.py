@@ -120,33 +120,68 @@ class stepper :
         GPIO.output(self.pins,GPIO.LOW)    
     def off(self) :
         GPIO.output(self.pins,[0,0,0,0])
-class mast(self,chan,down,up):
-    def __init__:
+class mast:
+    def __init__(self,chan,down,up):
         self.pos = down
         self.down = down
         self.up = up
         self.servo = servo(chan)
-    def raise(self):
-       for angle in range(pos, up, 1) :
+    def Raise(self):
+        for angle in range(self.pos, self.up, 5) :
            self.servo.position(angle)
-           time.sleep(0.025)
-        self.servo.off()
-    def lower(self):
-       for angle in range(pos, down, -1) :
+           self.pos = angle
+           time.sleep(0.06)
+        #self.servo.off()
+    def Lower(self):
+        for angle in range(self.pos, self.down, -5) :
            self.servo.position(angle)
-           time.sleep(0.025)
+           self.pos = angle
+           time.sleep(0.06)
         self.servo.off()
-
+    def position(self,newpos) :
+        if(newpos > self.pos) :
+            step = 5
+        else :
+            step = -5    
+        for angle in range(self.pos, newpos, step) :
+           self.servo.position(angle)
+           self.pos = angle
+           time.sleep(0.06)
+        if( step < 0) :
+            self.servo.off()
+class arm:
+    def __init__(self,chan1,chan2):
+        self.servo1 = servo(chan1)
+        self.servo2 = servo(chan2)
+        self.pos1 = 125
+        self.pos2 = 125
+    def position(self,newpos) :
+        if(newpos > self.pos1) :
+            step = 5
+        else :
+            step = -5    
+        for angle in range(self.pos1, newpos, step) :
+           self.servo1.position(angle)
+           time.sleep(0.06)
+           self.pos1 = angle
+        for angle in range(self.pos2, newpos, step) :
+           self.servo2.position(angle)
+           time.sleep(0.06)
+           self.pos2 = angle
+        if( step > 0) :
+            self.servo1.off()
+            self.servo2.off()
+        
 class chassis :
     def __init__ (self) :
         self.m = motors (23,18,24,25)
-        self.mast = mast(5,40,110) # mast class, channel, down position, up position
-        self.cam = servo(13) # servo 2
+        self.mast = mast(5,40,120) # mast class, channel, down position, up position
+        self.arm = arm(6,13) # 2 servo
         #self.stepper1 = stepper([32,40,38,36]) # only need pins
         #self.stepper2 = stepper([32,40,38,36],delay=0.005) # want to adjust delay
         #self.stepper3 = stepper([32,40,38,36],reverse=1) # need direction reberse
         #self.stepper4 = stepper([32,40,38,36],delay=0.008,reverse=1) #set delay and reverse
-        self.wiggle = stepper([12,16,20,21])
+        self.nod = stepper([12,16,20,21],delay=0.020)
     def run (self,cmd,amt) :
         if(cmd == 'forward') :
             self.m.forward(amt)
@@ -158,10 +193,10 @@ class chassis :
             self.m.right(amt)
         elif (cmd == 'mast') :
             self.mast.position(amt)
+        elif (cmd == 'arm') :
+            self.arm.position(amt)
         elif (cmd == 'nod') :
-            self.cam.position(amt)
-        elif (cmd == 'wig') :
-            self.wiggle.go(amt)
+            self.nod.go(amt)
         else:
             print "Chassis Error:: Don't know how to do %s %s" % (cmd,amt)
 
