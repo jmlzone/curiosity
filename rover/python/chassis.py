@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import os.path
 
 class hPair :
     """ class for a pair of channels on the hbridge for a motor """
@@ -122,6 +123,8 @@ class stepper :
         GPIO.output(self.pins,[0,0,0,0])
 class mast:
     def __init__(self,chan,down,up):
+        self.installPath = os.path.dirname(os.path.realpath(__file__))
+        self.saveFile = os.path.abspath(self.installPath + "/../mastAngle.txt")
         self.pos = down
         self.down = down
         self.up = up
@@ -138,38 +141,70 @@ class mast:
            self.pos = angle
            time.sleep(0.06)
         self.servo.off()
+    def getLastPos(self) :
+        if os.path.isfile(self.saveFile):
+            file = open(self.saveFile)
+            pos = int(file.read())
+            file.close()
+        else:
+            pos = 20
+        return(pos)
+    def savePos(self,pos):
+        file = open(self.saveFile,"w")
+        file.write(str(pos))
+        file.close()
     def position(self,newpos) :
+        newpos = int(newpos)
+        self.pos=self.getLastPos()
         if(newpos > self.pos) :
             step = 5
         else :
             step = -5    
         for angle in range(self.pos, newpos, step) :
            self.servo.position(angle)
+           self.savePos(angle)
            self.pos = angle
-           time.sleep(0.06)
+           time.sleep(0.04)
         if( step < 0) :
             self.servo.off()
 class arm:
     def __init__(self,chan2):
+        self.installPath = os.path.dirname(os.path.realpath(__file__))
+        self.saveFile = os.path.abspath(self.installPath + "/../armAngle.txt")
         self.servo2 = servo(chan2)
         self.pos2 = 125
+    def getLastPos(self) :
+        if os.path.isfile(self.saveFile):
+            file = open(self.saveFile)
+            pos = int(file.read())
+            file.close()
+        else:
+            pos = 180
+        return(pos)
+    def savePos(self,pos):
+        file = open(self.saveFile,"w")
+        file.write(str(pos))
+        file.close()
     def position(self,newpos) :
+        self.pos2 = self.getLastPos()
+        newpos = int(newpos)
         if(newpos > self.pos2) :
             step = 5
         else :
             step = -5    
         for angle in range(self.pos2, newpos, step) :
            self.servo2.position(angle)
-           time.sleep(0.06)
+           time.sleep(0.04)
            self.pos2 = angle
+           self.savePos(angle)
         if( step > 0) :
-            self.servo1.off()
+            #self.servo1.off()
             self.servo2.off()
         
 class chassis :
     def __init__ (self) :
         self.m = motors (16,12,20,21)
-        self.mast = mast(5,40,120) # mast class, channel, down position, up position
+        self.mast = mast(6,40,120) # mast class, channel, down position, up position
         self.arm = arm(13) # 2 servo
         self.nod = stepper([18,23,24,25], delay=0.020)
     def run (self,cmd,amt) :
