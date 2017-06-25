@@ -8,8 +8,8 @@ sudo raspi-config
   * clean up internatilization options
   * enable camera, I2C and SPI
 
-sudo apt-get -y install apache2 gnuplot
-sudo apt-get install -y cmake  emacs
+sudo apt-get -y install apache2 gnuplot cmake  emacs gpac build-essential python-dev
+sudo apt-get install -y 
 sudo apt-get install -y gpac
   
 wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
