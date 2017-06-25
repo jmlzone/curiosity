@@ -150,20 +150,14 @@ class mast:
         if( step < 0) :
             self.servo.off()
 class arm:
-    def __init__(self,chan1,chan2):
-        self.servo1 = servo(chan1)
+    def __init__(self,chan2):
         self.servo2 = servo(chan2)
-        self.pos1 = 125
         self.pos2 = 125
     def position(self,newpos) :
-        if(newpos > self.pos1) :
+        if(newpos > self.pos2) :
             step = 5
         else :
             step = -5    
-        for angle in range(self.pos1, newpos, step) :
-           self.servo1.position(angle)
-           time.sleep(0.06)
-           self.pos1 = angle
         for angle in range(self.pos2, newpos, step) :
            self.servo2.position(angle)
            time.sleep(0.06)
@@ -176,8 +170,8 @@ class chassis :
     def __init__ (self) :
         self.m = motors (16,12,20,21)
         self.mast = mast(5,40,120) # mast class, channel, down position, up position
-        self.arm = arm(6) # 2 servo
-        self.nod = stepper([23,18,24,25],delay=0.020)
+        self.arm = arm(13) # 2 servo
+        self.nod = stepper([18,23,24,25], delay=0.020)
     def run (self,cmd,amt) :
         if(cmd == 'forward') :
             self.m.forward(amt)
