@@ -80,11 +80,15 @@ sub post{
     $missionList = "$ml $cmd $cnt";
     $missionList =~ s/\n//g;
     if ($opt eq "Add" ) {
+	$missionList = "$ml $cmd $cnt";
+	$missionList =~ s/\n//g;
 	&html_header("Build $currentMission Mission Task List");
 #        print "opt = $opt, cmd = $cmd, cnt = $cnt, ml = $rqpairs{\"missionList\"} \n $missionList ";
 	print "\n<br>\n";
 	&display_sub_form;
     } else { # run
+	$missionList = $ml;
+	$missionList =~ s/\n//g;
 	&html_header("Running Mission Task List");
 	print "<H1>Curiosity Running Mission $currentMisstion Task List on $hostname</H1>\n";
 	print "\n<br>\n";
