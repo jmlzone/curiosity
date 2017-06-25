@@ -58,7 +58,9 @@ class sensors :
         self.mag=mag.mag()
 
     def readAll(self,log) :
+        #forwardDistance = 1
         forwardDistance = self.rFront.measure() / 100.0
+        #reverseDistance = 1
         reverseDistance = self.rRear.measure() / 100.0
         (amb,obj) = self.ir.measure()
         #(hum,temp) = self.ht.measure()

@@ -25,10 +25,10 @@ class ranger:
         time.sleep(0.00001)
         GPIO.output(self.trigPin, GPIO.LOW)
 
-        while GPIO.input(self.echoPin and not self.timeOut.expired)==0:
+        while ((GPIO.input(self.echoPin)==0) and not self.timeOut.expired):
             pulse_start = time.time()
 
-        while GPIO.input(self.echoPin and not self.timeOut.expired)==1:
+        while ((GPIO.input(self.echoPin)==1) and not self.timeOut.expired):
             pulse_end = time.time()
 
         if(self.timeOut.expired) :
