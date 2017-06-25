@@ -150,20 +150,14 @@ class mast:
         if( step < 0) :
             self.servo.off()
 class arm:
-    def __init__(self,chan1,chan2):
-        self.servo1 = servo(chan1)
+    def __init__(self,chan2):
         self.servo2 = servo(chan2)
-        self.pos1 = 125
         self.pos2 = 125
     def position(self,newpos) :
-        if(newpos > self.pos1) :
+        if(newpos > self.pos2) :
             step = 5
         else :
             step = -5    
-        for angle in range(self.pos1, newpos, step) :
-           self.servo1.position(angle)
-           time.sleep(0.06)
-           self.pos1 = angle
         for angle in range(self.pos2, newpos, step) :
            self.servo2.position(angle)
            time.sleep(0.06)
@@ -175,8 +169,8 @@ class arm:
 class chassis :
     def __init__ (self) :
         self.m = motors (23,18,24,25)
-        self.mast = mast(5,40,120) # mast class, channel, down position, up position
-        self.arm = arm(6,13) # 2 servo
+        self.mast = mast(6,40,120) # mast class, servo-1 channel, down position, up position
+        self.arm = arm(13) # servo-2
         #self.stepper1 = stepper([32,40,38,36]) # only need pins
         #self.stepper2 = stepper([32,40,38,36],delay=0.005) # want to adjust delay
         #self.stepper3 = stepper([32,40,38,36],reverse=1) # need direction reberse
