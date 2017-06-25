@@ -44,8 +44,8 @@ class camera:
     	self.camera.image_effect = 'none'
     	self.camera.color_effects = None
     	self.camera.rotation = 0
-    	self.camera.hflip = False
-    	self.camera.vflip = False
+    	self.camera.hflip = True
+    	self.camera.vflip = True
     	self.camera.crop = (0.0, 0.0, 1.0, 1.0)
         self.camera.framerate = 30
         self.camera.start_preview()
