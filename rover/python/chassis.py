@@ -59,12 +59,10 @@ class motors :
 class servo :
     def __init__ (self,pin):
         self.pin = pin
-        GPIO.setup(self.pin, GPIO.OUT)
-        self.period = 20.0 # ms = 50 hz
-        frequency = 1000/self.period # 50 hz
-        self.pwm=GPIO.PWM(self.pin,frequency)
-
+        self.turnOn()
     def position (self,angle) :
+        if(not self.on) :
+            self.turnOn()
         # 0 degrees = 0.6 ms
         # 180 degrees = 2.6 ms
         deg0 = 0.6
@@ -84,6 +82,17 @@ class servo :
             #self.pwm.stop()
         else :
             print "Error can't go to angle %f" % angle
+
+    def off(self) :
+        self.pwm.stop()
+        self.on = False
+
+    def turnOn(self):
+        GPIO.setup(self.pin, GPIO.OUT)
+        self.period = 20.0 # ms = 50 hz
+        frequency = 1000/self.period # 50 hz
+        self.pwm=GPIO.PWM(self.pin,frequency)
+        self.on = True
 
 class stepper :
     def __init__ (self,pins, delay=0.002, reverse=0) :
@@ -111,12 +120,27 @@ class stepper :
         GPIO.output(self.pins,GPIO.LOW)    
     def off(self) :
         GPIO.output(self.pins,[0,0,0,0])
-
+class mast(self,chan,down,up):
+    def __init__:
+        self.pos = down
+        self.down = down
+        self.up = up
+        self.servo = servo(chan)
+    def raise(self):
+       for angle in range(pos, up, 1) :
+           self.servo.position(angle)
+           time.sleep(0.025)
+        self.servo.off()
+    def lower(self):
+       for angle in range(pos, down, -1) :
+           self.servo.position(angle)
+           time.sleep(0.025)
+        self.servo.off()
 
 class chassis :
     def __init__ (self) :
-        self.m = motors (18,23,25,24)
-        self.mast = servo(6) # servo 1
+        self.m = motors (23,18,24,25)
+        self.mast = mast(5,40,110) # mast class, channel, down position, up position
         self.cam = servo(13) # servo 2
         #self.stepper1 = stepper([32,40,38,36]) # only need pins
         #self.stepper2 = stepper([32,40,38,36],delay=0.005) # want to adjust delay
