@@ -47,7 +47,7 @@ foreach $cmd (@cmdList) {
 }
     print <<EOF1;
 </select>
-    <input type="number" name="cnt" min="0.01" max="20" step=".01" value=$cnt> 
+    <input type="number" name="cnt" min="-700" max="700" step="1" value=$cnt> 
     <br>
     <input name="submit" type="submit" value="Add" />
 <textarea name="missionList" rows="5" cols="50">
