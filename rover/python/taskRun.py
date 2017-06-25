@@ -45,7 +45,7 @@ imgBaseName =  "/curiosity/missions/" + hostname + "_" + missionName + "_"
 missionLog = open( configRoot + "/" + missionName + "_log.html", "a")
 c = chassis.chassis()
 s = sensors.sensors()
-cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,7,missionLog)
+cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,4,missionLog)
 missionLog.write("<h2>Sequence %s</h2><br>" % seq)
 
 argNum = 1;

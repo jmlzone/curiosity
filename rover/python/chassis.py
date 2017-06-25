@@ -174,14 +174,10 @@ class arm:
         
 class chassis :
     def __init__ (self) :
-        self.m = motors (23,18,24,25)
+        self.m = motors (16,12,20,21)
         self.mast = mast(5,40,120) # mast class, channel, down position, up position
-        self.arm = arm(6,13) # 2 servo
-        #self.stepper1 = stepper([32,40,38,36]) # only need pins
-        #self.stepper2 = stepper([32,40,38,36],delay=0.005) # want to adjust delay
-        #self.stepper3 = stepper([32,40,38,36],reverse=1) # need direction reberse
-        #self.stepper4 = stepper([32,40,38,36],delay=0.008,reverse=1) #set delay and reverse
-        self.nod = stepper([12,16,20,21],delay=0.020)
+        self.arm = arm(6) # 2 servo
+        self.nod = stepper([23,18,24,25],delay=0.020)
     def run (self,cmd,amt) :
         if(cmd == 'forward') :
             self.m.forward(amt)

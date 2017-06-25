@@ -19,17 +19,17 @@ import sys
 import subprocess
 
 class camera:
-    def __init__ (self,hostname,seq, htmlRoot, imagePath, rangerPin, log) :
+    def __init__ (self,hostname,seq, htmlRoot, imagePath, laserPin, log) :
         self.hostname = hostname
         self.seq = seq
         self.htmlRoot = htmlRoot
         self.imagePath = imagePath
         self.camLock = os.path.dirname(self.htmlRoot + self.imagePath) + "/camLock"
-        self.rangerPin = rangerPin
+        self.laserPin = laserPin
         self.log=log
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.rangerPin, GPIO.OUT)
-        GPIO.output(self.rangerPin,GPIO.LOW)    
+        GPIO.setup(self.laserPin, GPIO.OUT)
+        GPIO.output(self.laserPin,GPIO.LOW)    
         self.camera = picamera.PiCamera()
     	self.camera.sharpness = 0
     	self.camera.contrast = 0
@@ -53,16 +53,16 @@ class camera:
         self.view = 0
         self.vid = 0
 
-    def capture(self,camHs, numPic, useRanger) :
+    def capture(self,camHs, numPic, useLaser) :
         if(self.getCamLock()) :
             pname = self.htmlRoot + self.imagePath + self.seq + ("_%d_" % self.view) + "%d" + ".jpg"
             # print ("pname = %s" % pname)
             print ("capturing %d images" % numPic)
-            if(useRanger) :
-                GPIO.output(self.rangerPin,GPIO.HIGH)
+            if(useLaser) :
+                GPIO.output(self.laserPin,GPIO.HIGH)
             self.camera.capture_sequence([pname %i for i in range(numPic)], use_video_port=camHs)
-            if(useRanger) :
-                GPIO.output(self.rangerPin,GPIO.LOW)
+            if(useLaser) :
+                GPIO.output(self.laserPin,GPIO.LOW)
             self.releaseCamLock()
             return(True)
         else:
@@ -90,7 +90,7 @@ class camera:
 
     def taskCapture(self,task,numStr):
         num = int(numStr)
-        useRanger = (task.find("RF") != -1)
+        useLaser = (task.find("RF") != -1)
         camHs = (task.find("HS") != -1)
         vid = (task.find("Vid") != -1)
         if(vid) :
@@ -99,7 +99,7 @@ class camera:
             else:
                 self.vidStop()
         else:
-            success = self.capture(camHs,num,useRanger)
+            success = self.capture(camHs,num,useLaser)
             if(success) :
                 pbase = self.imagePath + self.seq + ("_%d_" % self.view)
                 for i in range(num) :

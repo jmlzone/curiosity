@@ -12,7 +12,7 @@ class ranger:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.trigPin,GPIO.OUT)
         GPIO.setup(self.echoPin,GPIO.IN)
-        self.timeOut = gpTimer.gptimer(1) 
+        self.timeOut = gpTimer.gpTimer(1) 
 
     def measure (self) :
         """ Returns the ditance measured in CM
