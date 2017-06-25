@@ -4,6 +4,7 @@ import ranger
 import irTemp
 import spidev
 import Adafruit_DHT
+import mag
 
 """ examples of sensors and how to read
 
@@ -52,36 +53,40 @@ class sensors :
         self.ht=DHT(22)
         self.voltage = adcChan(0,float(0.02))
         self.gas = adcChan(1,float(0.005))
-        self.uv = adcChan(2,float(0.005))
-        self.light = adcChan(3,float(1.0/200.0))
+        self.uv = adcChan(6,float(0.005))
+        self.light = adcChan(7,float(1.0/200.0))
+        self.mag=mag.mag()
 
     def readAll(self,log) :
-        forwardDistance = self.rFront.measure()
-        reverseDistance = self.rRear.measure()
+        forwardDistance = self.rFront.measure() / 100.0
+        reverseDistance = self.rRear.measure() / 100.0
         (amb,obj) = self.ir.measure()
         #(hum,temp) = self.ht.measure()
         batVolts = self.voltage.measure()
         uv = self.uv.measure()
         gas = self.gas.measure()
         light = self.light.measure()
+        absMag=self.mag.measure()
 
         print ("Sensor Readings:")
-        print ("Distances: Forward = %f, Reverse = %f" % (forwardDistance, reverseDistance))
-        print ("Temperatures: Ambient = %f, Object = %f" % (amb,obj))
+        print ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters" % (forwardDistance, reverseDistance))
+        print ("Temperatures: Ambient = %4.1f C, Object = %4.1f C" % (amb,obj))
         #print ("Relative Humidity = %f, Temperature = %f" % (hum,temp))
-        print ("Battery Voltage = %f " % batVolts)
-        print ("Gas Level = %f" % gas)
-        print ("UV Level = %f" % uv)
-        print ("Light Level = %f" %light)
+        print ("Battery Voltage = %4.1f V" % batVolts)
+        print ("Gas Level = %5.2f" % gas)
+        print ("UV Level = %5.2f" % uv)
+        print ("Light Level = %5.2f" %light)
+        print ("Magnetic Field = %2.2f Guass" % absMag)
 
         log.write ("Sensor Readings:<br>")
-        log.write ("Distances: Forward = %f, Reverse = %f<br>" % (forwardDistance, reverseDistance))
-        log.write ("Temperatures: Ambient = %f, Object = %f<br>" % (amb,obj))
+        log.write ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters<br>" % (forwardDistance, reverseDistance))
+        log.write ("Temperatures: Ambient = %4.1f C, Object = %4.1f C<br>" % (amb,obj))
         #log.write ("Relative Humidity = %f, Temperature = %f<br>" % (hum,temp))
-        log.write ("Battery Voltage = %f <br>" % batVolts)
-        log.write ("Gas Level = %f<br>" % gas)
-        log.write ("UV Level = %f<br>" % uv)
-        log.write ("Light Level = %f<br>" %light)
+        log.write ("Battery Voltage = %4.1f V<br>" % batVolts)
+        log.write ("Gas Level = %5.2f<br>" % gas)
+        log.write ("UV Level = %5.2f<br>" % uv)
+        log.write ("Light Level = %5.2f<br>" %light)
+        log.write ("Magnetic Field = %2.2f Guass<br>" % absMag)
 
         
 
