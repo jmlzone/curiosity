@@ -62,6 +62,10 @@ class sensors :
         reverseDistance = self.rRear.measure() / 100.0
         (amb,obj) = self.ir.measure()
         (hum,temp) = self.ht.measure()
+        if(hum == None) :
+            hum = -1
+        if(temp == None) :
+            temp = -273
         batVolts = self.voltage.measure()
         uv = self.uv.measure()
         gas = self.gas.measure()
