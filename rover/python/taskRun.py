@@ -9,7 +9,8 @@ import RPi.GPIO as GPIO
 import sensors
 import camera
 import socket
-import os.path
+import os
+import string
 
 def sequenceNumber():
     sequencePath = configRoot + "/sequence.txt"
@@ -35,6 +36,27 @@ def getMissionName():
         name = "testing"
     return name
 
+def getLock(path,tasks):
+    lockFile = os.path.abspath(path + "/lock.txt")
+    if os.path.isfile(lockFile):
+        file = open(lockFile)
+        taskList = file.read()
+        file.close()
+        print("ERROR Can not send new tasks to this rover, it is busy")
+        print("ERROR Did you click 'Run' twice?")
+        print("ERROR I am currently running %s" % taskList)
+        print("ERROR Please wait until I complete my current tasks")
+        exit(-1)
+    else:
+        file = open(lockFile,"w")
+        file.write(string.join(tasks," "))
+        file.close()
+def releaseLock(path):
+    lockFile = os.path.abspath(path + "/lock.txt")
+    if os.path.isfile(lockFile):
+        os.remove(lockFile)
+    else :
+        print("Warning, no lock to remove after mission %s" % lockFile)
 
 hostname = socket.gethostname()
 htmlRoot = "/var/www/html"
@@ -42,16 +64,18 @@ configRoot = htmlRoot + "/curiosity/missions"
 seq = sequenceNumber()
 missionName = getMissionName()
 imgBaseName =  "/curiosity/missions/" + hostname + "_" + missionName + "_"
+getLock(configRoot,sys.argv)
 missionLog = open( configRoot + "/" + missionName + "_log.html", "a")
 c = chassis.chassis()
 s = sensors.sensors()
 cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,4,missionLog)
 missionLog.write("<h2>Sequence %s</h2><br>" % seq)
-
+print("<h2>Mission: %s sequence %s</h2><br>" %(missionName, seq))
 argNum = 1;
 while (argNum < len(sys.argv)) :
     task = sys.argv[argNum]
-    missionLog.write("%s %s<br>" % (task, sys.argv[argNum+1]))
+    missionLog.write("<h3>%s %s</h3><br>" % (task, sys.argv[argNum+1]))
+    print("<h3>%s %s</h3><br>" % (task, sys.argv[argNum+1]))
     if(task.find("cam") != -1):
         cam.taskCapture(task, sys.argv[argNum+1])
     else:
@@ -73,3 +97,4 @@ print ("    <img src=/curiosity.jpg>")
 print ("    <hr>")
 
 GPIO.cleanup()
+releaseLock(configRoot)
