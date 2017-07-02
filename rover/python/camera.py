@@ -29,32 +29,37 @@ class camera:
         self.log=log
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.laserPin, GPIO.OUT)
-        GPIO.output(self.laserPin,GPIO.LOW)    
-        self.camera = picamera.PiCamera()
-    	self.camera.sharpness = 0
-    	self.camera.contrast = 0
-    	self.camera.brightness = 50
-    	self.camera.saturation = 0
-    	self.camera.ISO = 0
-    	self.camera.video_stabilization = False
-    	self.camera.exposure_compensation = 0
-    	self.camera.exposure_mode = 'auto'
-    	self.camera.meter_mode = 'average'
-    	self.camera.awb_mode = 'auto'
-    	self.camera.image_effect = 'none'
-    	self.camera.color_effects = None
-    	self.camera.rotation = 0
-    	self.camera.hflip = True
-    	self.camera.vflip = True
-    	self.camera.crop = (0.0, 0.0, 1.0, 1.0)
-        self.camera.framerate = 30
-        self.camera.start_preview()
+        GPIO.output(self.laserPin,GPIO.LOW)
+        self.online = True
+        try:
+            self.camera = picamera.PiCamera()
+            self.camera.sharpness = 0
+            self.camera.contrast = 0
+            self.camera.brightness = 50
+            self.camera.saturation = 0
+            self.camera.ISO = 0
+            self.camera.video_stabilization = False
+            self.camera.exposure_compensation = 0
+            self.camera.exposure_mode = 'auto'
+            self.camera.meter_mode = 'average'
+            self.camera.awb_mode = 'auto'
+            self.camera.image_effect = 'none'
+            self.camera.color_effects = None
+            self.camera.rotation = 0
+            self.camera.hflip = True
+            self.camera.vflip = True
+            self.camera.crop = (0.0, 0.0, 1.0, 1.0)
+            self.camera.framerate = 30
+            self.camera.start_preview()
+        except:
+            self.online = False
+            print("Warning Camera offline")
         self.vidRunning = False
         self.view = 0
         self.vid = 0
 
     def capture(self,camHs, numPic, useLaser) :
-        if(self.getCamLock()) :
+        if(self.getCamLock() and self.online) :
             pname = self.htmlRoot + self.imagePath + self.seq + ("_%d_" % self.view) + "%d" + ".jpg"
             # print ("pname = %s" % pname)
             print ("capturing %d images" % numPic)
@@ -69,13 +74,13 @@ class camera:
             return(False)
 
     def vidStart(self) :
-        if(self.getCamLock()) :
+        if(self.getCamLock() and self.online) :
             vname = self.htmlRoot + self.imagePath + self.seq + ("_%d" % self.vid) + ".h264"
             self.camera.start_recording(vname,format='h264')
             self.vidRunning=True
 
     def vidStop(self) :
-        if(self.vidRunning) :
+        if(self.vidRunning and self.online) :
             self.camera.stop_recording()
             self.releaseCamLock()
             h264path = self.htmlRoot + self.imagePath + self.seq + ("_%d" % self.vid) + ".h264"
@@ -110,10 +115,12 @@ class camera:
         if( os.path.isfile(self.camLock ) ):
             print("Error, Camera already in use")
             return(False)
-        else :
+        elif(self.online) :
             file = open(self.camLock,"w")
             file.write("Locked")
             return(True)
+        else :
+            return(False)
             
     def releaseCamLock(self) :
         if( os.path.isfile(self.camLock ) ):

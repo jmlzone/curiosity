@@ -58,6 +58,15 @@ def releaseLock(path):
     else :
         print("Warning, no lock to remove after mission %s" % lockFile)
 
+def isInt_str(v):
+    return v=='0' or (v if v.find('..') > -1 else v.lstrip('-+').rstrip('0').rstrip('.')).isdigit()
+
+def isFloat_str(v) :
+    return v.replace('.','',1).isdigit()
+def isNum(v):
+    return(isInt_str(v) or isFloat_str(v))
+
+validCmds = ["forward","reverse","left","right","nod","arm","camera", "cameraHS","cameraRF", "cameraRFHS","cameraVid","mast"]
 hostname = socket.gethostname()
 htmlRoot = "/var/www/html"
 configRoot = htmlRoot + "/curiosity/missions"
@@ -73,18 +82,29 @@ missionLog.write("<h2>Sequence %s</h2><br>" % seq)
 print("<h2>Mission: %s sequence %s</h2><br>" %(missionName, seq))
 argNum = 1;
 while (argNum < len(sys.argv)) :
-    task = sys.argv[argNum]
-    missionLog.write("<h3>%s %s</h3><br>" % (task, sys.argv[argNum+1]))
-    print("<h3>%s %s</h3><br>" % (task, sys.argv[argNum+1]))
-    if(task.find("cam") != -1):
-        cam.taskCapture(task, sys.argv[argNum+1])
-    else:
-        c.run(task, sys.argv[argNum+1])
-    s.readAll(missionLog)
-    argNum = argNum + 2
-
-cam.vidStop()
-cam.close()
+    try: 
+        task = sys.argv[argNum]
+        val = sys.argv[argNum+1]
+    except:
+        task = "Dummy"
+        val = 0
+    if((task in validCmds) and isNum(val)) :
+        missionLog.write("<h3>%s %s</h3><br>" % (task, val))
+        print("<h3>%s %s</h3><br>" % (task, val))
+        if(task.find("cam") != -1):
+            cam.taskCapture(task, val)
+        else:
+            c.run(task, val)
+        s.readAll(missionLog)
+        argNum = argNum + 2
+    else :
+        missionLog.write("ignoring %s %s<br>\n" % (task, val))
+        print("ignoring %s %s<br>" % (task, val))
+        argNum = argNum + 1
+        
+if(cam.online) :
+    cam.vidStop()
+    cam.close()
 missionLog.write("<hr>")
 print ("</pre>")
 print ("    View <a href=\"/curiosity/missions/mission.html\">most recent mission</a><br>")

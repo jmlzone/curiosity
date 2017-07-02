@@ -24,32 +24,39 @@ class motors :
     def __init__ (self, la,lb, ra, rb) :
         self.mLeft = hPair(la,lb)
         self.mRight = hPair(ra,rb)
+        self.limit = 300.0 # 5 minute maximum.
+
+    def run(self,sec) :
+        t = float(sec)
+        if(t > self.limit) :
+            t = self.limit
+        time.sleep(t)
 
     def forward(self, sec):
         self.mLeft.forward()
         self.mRight.forward()
-        time.sleep(float(sec))
+        self.run(sec)
         self.mLeft.stop()
         self.mRight.stop()
 
     def reverse(self, sec):
         self.mLeft.reverse()
         self.mRight.reverse()
-        time.sleep(float(sec))
+        self.run(sec)
         self.mLeft.stop()
         self.mRight.stop()
 
     def left(self, sec):
         self.mLeft.reverse()
         self.mRight.forward()
-        time.sleep(float(sec))
+        self.run(sec)
         self.mLeft.stop()
         self.mRight.stop()
 
     def right(self, sec):
         self.mLeft.forward()
         self.mRight.reverse()
-        time.sleep(float(sec))
+        self.run(sec)
         self.mLeft.stop()
         self.mRight.stop()
 
@@ -129,6 +136,7 @@ class mast:
         self.down = down
         self.up = up
         self.servo = servo(chan)
+        self.hold()
     def Raise(self):
         for angle in range(self.pos, self.up, 5) :
            self.servo.position(angle)
@@ -167,6 +175,12 @@ class mast:
            time.sleep(0.04)
         if( step < 0) :
             self.servo.off()
+    def hold(self):
+        """ hold position if we were in the up poistion """
+        lastPos = (self.getLastPos()
+        if(LastPos > 90 ) : # in the up position
+            self.servo.position(LastPos)
+        
 class arm:
     def __init__(self,chan2):
         self.installPath = os.path.dirname(os.path.realpath(__file__))
