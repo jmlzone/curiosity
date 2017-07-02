@@ -177,9 +177,9 @@ class mast:
             self.servo.off()
     def hold(self):
         """ hold position if we were in the up poistion """
-        lastPos = (self.getLastPos()
-        if(LastPos > 90 ) : # in the up position
-            self.servo.position(LastPos)
+        lastPos = self.getLastPos()
+        if(lastPos > 90 ) : # in the up position
+            self.servo.position(lastPos)
         
 class arm:
     def __init__(self,chan2):
