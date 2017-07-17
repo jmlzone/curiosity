@@ -1,0 +1,6 @@
+# This is the crontab to properly idle the rover and turn things off on reboot.
+#
+# either pase the line below into the crontab
+# or
+# crontab -u pi crontab
+@reboot sudo /homne/pi/curiosity/rover/python/stop.py

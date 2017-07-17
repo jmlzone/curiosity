@@ -66,7 +66,7 @@ def isFloat_str(v) :
 def isNum(v):
     return(isInt_str(v) or isFloat_str(v))
 
-validCmds = ["forward","reverse","left","right","nod","arm","camera", "cameraHS","cameraRF", "cameraRFHS","cameraVid","mast"]
+validCmds = ["forward","reverse","left","right","nod","arm","camera", "cameraHS","cameraRF", "cameraRFHS","cameraVid","mast","reset"]
 hostname = socket.gethostname()
 htmlRoot = "/var/www/html"
 configRoot = htmlRoot + "/curiosity/missions"
@@ -76,7 +76,7 @@ imgBaseName =  "/curiosity/missions/" + hostname + "_" + missionName + "_"
 getLock(configRoot,sys.argv)
 missionLog = open( configRoot + "/" + missionName + "_log.html", "a")
 c = chassis.chassis()
-s = sensors.sensors()
+s = sensors.sensors(missionLog)
 cam = camera.camera(hostname,seq,htmlRoot,imgBaseName,4,missionLog)
 missionLog.write("<h2>Sequence %s</h2><br>" % seq)
 print("<h2>Mission: %s sequence %s</h2><br>" %(missionName, seq))
@@ -93,6 +93,12 @@ while (argNum < len(sys.argv)) :
         print("<h3>%s %s</h3><br>" % (task, val))
         if(task.find("cam") != -1):
             cam.taskCapture(task, val)
+        elif (task = 'reset') :
+            if(val = 123) :
+                self.installPath = os.path.dirname(os.path.realpath(__file__))
+                f = os.path.abspath(self.installPath + "/../sensorStatus.py")
+                if os.path.isfile(f):
+                os.remove(f)
         else:
             c.run(task, val)
         s.readAll(missionLog)

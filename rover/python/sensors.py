@@ -46,26 +46,75 @@ class DHT :
 
 class sensors :
     """ All sensors on the Curiosity platform """
-    def __init__ (self) :
-        self.rFront = ranger.ranger(17,27)
-        self.rRear = ranger.ranger(19,26)
-        self.ir=irTemp.irTemp()
-        self.ht=DHT(22)
+    def __init__ (self,log) :
+        self.installPath = os.path.dirname(os.path.realpath(__file__))
+        self.saveFile = os.path.abspath(self.installPath + "/../sensorStatus.py")
+        self.saveSensorList = ['rFrontOnline','rRearOnline','irOnline','htOnline']
+        if os.path.isfile(self.saveFile):
+            execfile(self.saveFile)
+            for sensor in saveSensorList :
+                self.__dict__[sensor] = dict(__globals__)[sensor]
+                if(not dict(__globals__)[sensor]) :
+                    print("Warning %s sensor is offline" % sensor)
+                    log.write("Warning %s sensor is offline<br>" % sensor)
+            file.close()
+        else:
+            for sensor in saveSensorList :
+                self.__dict__[sensor] = True
+        if(self.rFrontOnline) :
+            self.rFront = ranger.ranger(17,27)
+        if(self.rRearOnline) :
+            self.rRear = ranger.ranger(19,26)
+        if(self.irOnline) :
+            self.ir=irTemp.irTemp()
+        if(self.htOnline) :
+            self.ht=DHT(22)
         self.voltage = adcChan(0,float(0.02))
         self.gas = adcChan(1,float(0.005))
         self.uv = adcChan(6,float(0.005))
         self.light = adcChan(7,float(1.0/200.0))
         self.mag=mag.mag()
 
+    def saveStatus(self) :
+        self.installPath = os.path.dirname(os.path.realpath(__file__))
+        self.saveFile = os.path.abspath(self.installPath + "/../sensorStatus.py")
+        f = open(self.saveFile,"w") 
+        for sensor in saveSensorList :
+            f.write("%s = %s\n" % (sensor, str(self.__dict__[sensor]))
+        f.close()
+
     def readAll(self,log) :
-        forwardDistance = self.rFront.measure() / 100.0
-        reverseDistance = self.rRear.measure() / 100.0
-        (amb,obj) = self.ir.measure()
-        (hum,temp) = self.ht.measure()
-        if(hum == None) :
-            hum = -1
-        if(temp == None) :
-            temp = -273
+        if(self.rFrontOnline) :
+            forwardDistance = self.rFront.measure() / 100.0
+        else :
+            forwardDistance = 0
+        if(forwardDistance < 0 ) :
+            self.rFrontOnline = False
+            self.saveStatus()
+        if(self.rRearOnline) :
+            reverseDistance = self.rRear.measure() / 100.0
+        else :
+            reverseDistance = 0
+        if(reverseDistance < 0 ) :
+            self.rRearOnline = False
+            self.saveStatus()
+        if(self.irOnline) :
+            (amb,obj) = self.ir.measure()
+            if(amb < 0 or obj <0 ) :
+                self.irOnline = False
+                self.saveStatus()
+
+        if(self.htOnline) :
+            (hum,temp) = self.ht.measure()
+            if(hum == None) :
+                hum = -1
+                self.htOnline = False
+                self.saveStatus()
+            if(temp == None) :
+                if(self.htOnline) :
+                    self.htOnline = False
+                    self.saveStatus()
+                temp = -273
         batVolts = self.voltage.measure()
         uv = self.uv.measure()
         gas = self.gas.measure()
@@ -73,23 +122,25 @@ class sensors :
         absMag=self.mag.measure()
 
         print ("Sensor Readings:")
-        print ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters" % (forwardDistance, reverseDistance))
-        print ("Temperatures: Ambient = %4.1f C, Object = %4.1f C" % (amb,obj))
-        print ("Relative Humidity = %4.1f, Temperature = %4.1f" % (hum,temp))
-        print ("Battery Voltage = %4.1f V" % batVolts)
-        print ("Gas Level = %5.2f" % gas)
-        print ("UV Level = %5.2f" % uv)
-        print ("Light Level = %5.2f" %light)
-        print ("Magnetic Field = %2.2f Guass" % absMag)
-
         log.write ("Sensor Readings:<br>")
-        log.write ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters<br>" % (forwardDistance, reverseDistance))
-        log.write ("Temperatures: Ambient = %4.1f C, Object = %4.1f C<br>" % (amb,obj))
-        log.write ("Relative Humidity = %4.1f, Temperature = %4.1f<br>" % (hum,temp))
+        if(self.rFrontOnline or self.rRearOnline)) :
+            print ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters" % (forwardDistance, reverseDistance))
+            log.write ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters<br>" % (forwardDistance, reverseDistance))
+        if(self.irOnline) :
+            print ("Temperatures: Ambient = %4.1f C, Object = %4.1f C" % (amb,obj))
+            log.write ("Temperatures: Ambient = %4.1f C, Object = %4.1f C<br>" % (amb,obj))
+        if(self.htOnline) :
+            print ("Relative Humidity = %4.1f, Temperature = %4.1f" % (hum,temp))
+            log.write ("Relative Humidity = %4.1f, Temperature = %4.1f<br>" % (hum,temp))
+        print ("Battery Voltage = %4.1f V" % batVolts)
         log.write ("Battery Voltage = %4.1f V<br>" % batVolts)
+        print ("Gas Level = %5.2f" % gas)
         log.write ("Gas Level = %5.2f<br>" % gas)
+        print ("UV Level = %5.2f" % uv)
         log.write ("UV Level = %5.2f<br>" % uv)
+        print ("Light Level = %5.2f" %light)
         log.write ("Light Level = %5.2f<br>" %light)
+        print ("Magnetic Field = %2.2f Guass" % absMag)
         log.write ("Magnetic Field = %2.2f Guass<br>" % absMag)
 
         
