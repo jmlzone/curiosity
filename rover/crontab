@@ -3,4 +3,4 @@
 # either pase the line below into the crontab
 # or
 # crontab -u pi crontab
-@reboot sudo /homne/pi/curiosity/rover/python/stop.py
+@reboot sudo /home/pi/curiosity/rover/python/stop.py

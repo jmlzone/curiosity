@@ -5,6 +5,7 @@ import irTemp
 import spidev
 import Adafruit_DHT
 import mag
+import os
 
 """ examples of sensors and how to read
 
@@ -52,14 +53,13 @@ class sensors :
         self.saveSensorList = ['rFrontOnline','rRearOnline','irOnline','htOnline']
         if os.path.isfile(self.saveFile):
             execfile(self.saveFile)
-            for sensor in saveSensorList :
-                self.__dict__[sensor] = dict(__globals__)[sensor]
-                if(not dict(__globals__)[sensor]) :
+            for sensor in self.saveSensorList :
+                self.__dict__[sensor] = dict(**locals())[sensor]
+                if(not dict(**locals())[sensor]) :
                     print("Warning %s sensor is offline" % sensor)
                     log.write("Warning %s sensor is offline<br>" % sensor)
-            file.close()
         else:
-            for sensor in saveSensorList :
+            for sensor in self.saveSensorList :
                 self.__dict__[sensor] = True
         if(self.rFrontOnline) :
             self.rFront = ranger.ranger(17,27)
@@ -79,8 +79,8 @@ class sensors :
         self.installPath = os.path.dirname(os.path.realpath(__file__))
         self.saveFile = os.path.abspath(self.installPath + "/../sensorStatus.py")
         f = open(self.saveFile,"w") 
-        for sensor in saveSensorList :
-            f.write("%s = %s\n" % (sensor, str(self.__dict__[sensor]))
+        for sensor in self.saveSensorList :
+            f.write("%s = %s\n" % (sensor, str(self.__dict__[sensor])))
         f.close()
 
     def readAll(self,log) :
@@ -123,7 +123,7 @@ class sensors :
 
         print ("Sensor Readings:")
         log.write ("Sensor Readings:<br>")
-        if(self.rFrontOnline or self.rRearOnline)) :
+        if(self.rFrontOnline or self.rRearOnline) :
             print ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters" % (forwardDistance, reverseDistance))
             log.write ("Distances: Forward = %4.2f Meters, Reverse = %4.2f Meters<br>" % (forwardDistance, reverseDistance))
         if(self.irOnline) :
