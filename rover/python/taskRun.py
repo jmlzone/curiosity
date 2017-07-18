@@ -94,11 +94,12 @@ while (argNum < len(sys.argv)) :
         if(task.find("cam") != -1):
             cam.taskCapture(task, val)
         elif (task == 'reset') :
-            if(val == 123) :
-                self.installPath = os.path.dirname(os.path.realpath(__file__))
-                f = os.path.abspath(self.installPath + "/../sensorStatus.py")
+            if(val == '123') :
+                installPath = os.path.dirname(os.path.realpath(__file__))
+                f = os.path.abspath(installPath + "/../sensorStatus.py")
                 if os.path.isfile(f):
                     os.remove(f)
+                    print("Removed %s" %f)
         else:
             c.run(task, val)
         s.readAll(missionLog)
